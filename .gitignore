@@ -3,3 +3,6 @@
 
 # Python virtuals environnements
 .venv/
+
+# Python cache
+__pycache__/
