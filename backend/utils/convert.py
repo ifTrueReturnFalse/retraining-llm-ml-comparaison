@@ -6,7 +6,6 @@
 # ///
 
 import pandas as pd
-import sys
 from pathlib import Path
 
 
@@ -17,7 +16,6 @@ def export_csv_to_feather(csv_path: str, typed_dict=None, dates_columns=None):
         dates_columns = {}
 
     path = Path(csv_path)
-    output_path = path.with_suffix(".feather")
 
     print(f"Chargement de {path.name}")
 
@@ -31,8 +29,9 @@ def export_csv_to_feather(csv_path: str, typed_dict=None, dates_columns=None):
     if cat_cols:
         df[cat_cols] = df[cat_cols].astype("category")
 
+    output_path = path.with_suffix(".parquet")
     print(f"Export vers {output_path.name}")
-    df.to_feather(output_path)
+    df.to_parquet(output_path, engine="pyarrow")
     print("Terminé")
 
 

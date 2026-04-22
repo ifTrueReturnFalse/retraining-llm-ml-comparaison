@@ -1,6 +1,6 @@
 # Heavy datasets
 /datasets/dataset.csv
-/datasets/dataset.feather
+/datasets/dataset.parquet
 
 # Python virtuals environnements
 .venv/
