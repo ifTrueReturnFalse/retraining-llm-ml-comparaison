@@ -1,7 +1,7 @@
 # /// script
 # dependencies = [
 #   "pandas",
-#   "pyarrow",  # <--- C'est lui qui manquait !
+#   "pyarrow",
 # ]
 # ///
 
