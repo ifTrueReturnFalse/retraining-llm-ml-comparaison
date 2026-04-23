@@ -10,6 +10,14 @@ from pathlib import Path
 
 
 def export_csv_to_feather(csv_path: str, typed_dict=None, dates_columns=None):
+    """
+    Converts a CSV file to a Parquet file with specified data types and date parsing.
+
+    :param csv_path: Path to the source CSV file.
+    :param typed_dict: Dictionary mapping column names to their desired pandas dtypes.
+    :param dates_columns: List of column names to be parsed as dates.
+    :return: None
+    """
     if typed_dict is None:
         typed_dict = {}
     if dates_columns is None:

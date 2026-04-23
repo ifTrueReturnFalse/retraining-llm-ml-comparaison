@@ -5,6 +5,15 @@ nlp = spacy.load("en_core_web_sm")
 
 
 def clean_text(texts):
+    """
+    Cleans and preprocesses a list of text strings using spaCy.
+
+    This function performs lemmatization, lowercasing, and removes stop words, 
+    punctuation, and whitespace. It uses spaCy's pipeline for efficient batch processing.
+
+    :param texts: An iterable of strings to be cleaned.
+    :return: A list of cleaned strings, where tokens are joined by spaces.
+    """
     processed_texts = []
 
     for doc in nlp.pipe(
