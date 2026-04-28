@@ -28,6 +28,11 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
     }
   };
 
+  /**
+   * Triggers the AI-powered tag suggestion by calling the LLM API endpoint.
+   * It sends the current claim content to the backend and updates the claim's tag
+   * based on the index returned by the model.
+   */
   const handleAITagSelect = async () => {
     if (!claim) return;
 

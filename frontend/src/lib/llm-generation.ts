@@ -37,6 +37,13 @@ export async function OllamaGeneration(claim: Claim) {
   return CheckLLMResponse(parseInt(response.response));
 }
 
+/**
+ * Validates the LLM response to ensure it is a valid index within the allowed tags range.
+ * 
+ * @param {number} response - The index returned by the LLM.
+ * @returns {number} The validated index.
+ * @throws {Error} Throws an error if the response is out of bounds.
+ */
 function CheckLLMResponse(response: number) {
   if (response <= 0 && response < ALLOWED_TAGS.length) {
     throw new Error("Réponse LLM incorrecte !");
