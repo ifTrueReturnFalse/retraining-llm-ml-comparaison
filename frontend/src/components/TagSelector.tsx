@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import styles from './TagSelector.module.css';
-import { ALLOWED_TAGS } from '@/constants/tags.ts';
-import { Claim } from '@/database/queries.ts';
-import { updateClaimTag } from '@/api-client.ts';
+import { useState } from "react";
+import styles from "./TagSelector.module.css";
+import { ALLOWED_TAGS } from "@/constants/tags.ts";
+import { Claim } from "@/database/queries.ts";
+import { updateClaimTag } from "@/api-client.ts";
 
 interface TagSelectorProps {
   claim: Claim | null;
@@ -22,8 +22,30 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
       await updateClaimTag(claim.id, tag);
       onTagUpdate(claim.id, tag);
     } catch (error) {
-      console.error('Error updating tag:', error);
+      console.error("Error updating tag:", error);
     } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleAITagSelect = async () => {
+    if (!claim) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch("/api/llm", {
+        method: "POST",
+        body: JSON.stringify({ claim: claim }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+
+      handleTagSelect(ALLOWED_TAGS[result.tagId]);
+    } catch (error) {
+      console.error(error);
       setIsUpdating(false);
     }
   };
@@ -51,12 +73,21 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
         </div>
 
         <div className={styles.tagSection}>
-          <h4 >Assign tag</h4>
+          <h4>Assign tag</h4>
 
           <div className={styles.tagSelector}>
+            <button
+              className={styles.AIButton}
+              type="button"
+              onClick={() => handleAITagSelect()}
+              disabled={isUpdating}
+            >
+              AI Tag Select
+            </button>
+
             <select
               className={styles.select}
-              value={claim.tag ?? ''}
+              value={claim.tag ?? ""}
               onChange={(e) => handleTagSelect(e.target.value)}
               disabled={isUpdating}
             >
@@ -71,7 +102,7 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
               ))}
             </select>
 
-            {(!claim.tag || claim.tag === '') && (
+            {(!claim.tag || claim.tag === "") && (
               <svg
                 className={styles.chevronIcon}
                 width="12"
@@ -87,11 +118,7 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
               </svg>
             )}
 
-            {isUpdating && (
-              <div className={styles.updating}>
-                Updating...
-              </div>
-            )}
+            {isUpdating && <div className={styles.updating}>Updating...</div>}
           </div>
         </div>
       </div>
