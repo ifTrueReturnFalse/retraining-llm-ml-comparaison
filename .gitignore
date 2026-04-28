@@ -1,6 +1,8 @@
-# Heavy datasets
+# Heavy datasets and exports
 /datasets/dataset.csv
 /datasets/dataset.parquet
+*.pkl
+metrics.json
 
 # Python virtuals environnements
 .venv/
