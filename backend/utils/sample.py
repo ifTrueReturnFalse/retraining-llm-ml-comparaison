@@ -1,7 +1,8 @@
 import pandas as pd
 from utils.ml_utils import uniform_sample
 
-if __name__ == "__main__":
+
+def create_sample():
     # Get data
     print("Chargement du dataframe")
     data = pd.read_parquet("../datasets/dataset.parquet")
@@ -16,3 +17,7 @@ if __name__ == "__main__":
     print("Export des échantillons")
     sample.to_parquet("../datasets/sample.parquet", engine="pyarrow")
     print("Fin de l'opération\n")
+
+
+if __name__ == "__main__":
+    create_sample()

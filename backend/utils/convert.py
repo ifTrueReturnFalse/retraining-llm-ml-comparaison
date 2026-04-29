@@ -7,33 +7,27 @@
 
 import pandas as pd
 from pathlib import Path
+from utils.constants import DATASET_TYPES, DATASET_DATES
 
 
-def export_csv_to_feather(csv_path: str, typed_dict=None, dates_columns=None):
+def export_csv_to_feather():
     """
-    Converts a CSV file to a Parquet file with specified data types and date parsing.
+    Converts the source CSV dataset to Parquet format.
 
-    :param csv_path: Path to the source CSV file.
-    :param typed_dict: Dictionary mapping column names to their desired pandas dtypes.
-    :param dates_columns: List of column names to be parsed as dates.
-    :return: None
+    Reads the dataset from '../datasets/dataset.csv' using predefined types and date columns,
+    converts specified columns to categorical types, and saves the result as a Parquet file.
     """
-    if typed_dict is None:
-        typed_dict = {}
-    if dates_columns is None:
-        dates_columns = {}
-
-    path = Path(csv_path)
+    path = Path("../datasets/dataset.csv")
 
     print(f"Chargement de {path.name}")
 
     temp_dtype = {
-        k: (v if v != "category" else "string") for k, v in typed_dict.items()
+        k: (v if v != "category" else "string") for k, v in DATASET_TYPES.items()
     }
 
-    df = pd.read_csv(path, dtype=temp_dtype, parse_dates=dates_columns)
+    df = pd.read_csv(path, dtype=temp_dtype, parse_dates=DATASET_DATES)
 
-    cat_cols = [k for k, v in typed_dict.items() if v == "category"]
+    cat_cols = [k for k, v in DATASET_TYPES.items() if v == "category"]
     if cat_cols:
         df[cat_cols] = df[cat_cols].astype("category")
 
@@ -44,22 +38,4 @@ def export_csv_to_feather(csv_path: str, typed_dict=None, dates_columns=None):
 
 
 if __name__ == "__main__":
-    THIS_DATASET_TYPES = {
-        "Tag": "category",
-        "Consumer Claim": "string",
-        "Company public response": "category",
-        "Company": "string",
-        "State": "string",
-        "ZIP code": "string",
-        "Tags": "category",
-        "Consumer consent provided?": "category",
-        "Submitted via": "category",
-        "Company response to consumer": "category",
-        "Timely response?": "category",
-        "Consumer disputed?": "category",
-        "Complaint ID": "int64",
-    }
-
-    THIS_DATASET_DATES = ["Date received", "Date sent to company"]
-
-    export_csv_to_feather("../datasets/dataset.csv", THIS_DATASET_TYPES, THIS_DATASET_DATES)
+    export_csv_to_feather()
