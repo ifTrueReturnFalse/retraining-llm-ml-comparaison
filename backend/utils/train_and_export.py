@@ -4,7 +4,6 @@ import json
 from utils.ml_utils import (
     clean_text,
     combine_text_columns,
-    uniform_sample,
     get_pipeline,
 )
 from utils.constants import CATEGORY_COLUMNS
@@ -15,24 +14,21 @@ from sklearn.metrics import classification_report
 
 
 def train_and_export():
+    # Get data
     print("Lecture du dataset...")
-    data = pd.read_parquet("../datasets/dataset.parquet")
+    data = pd.read_parquet("../datasets/sample.parquet")
     print("Dataset chargé !\n")
-    # Sample
-    print("Début échantillonage...")
-    data_sampled = uniform_sample(data)
-    print("Echantillonage terminé !\n")
 
     # Clean
     print("Nettoyage de la data...")
-    data_sampled["text_raw"] = combine_text_columns(data_sampled)
-    data_sampled["text_clean"] = clean_text(data_sampled["text_raw"])
+    data["text_raw"] = combine_text_columns(data)
+    data["text_clean"] = clean_text(data["text_raw"])
     print("Datas nettoyées !\n")
 
     # Split
     print("Préparation de la data...")
-    X = data_sampled.drop(["Tag", "Complaint ID", "text_raw"], axis=1)
-    y = data_sampled["Tag"]
+    X = data.drop(["Tag", "Complaint ID", "text_raw"], axis=1)
+    y = data["Tag"]
 
     le = LabelEncoder()
     y_encoded = le.fit_transform(y)
