@@ -1,0 +1,60 @@
+name: Model Versioning CI
+
+on:
+  # Déclenchement sur release 
+  release:
+    types: [created]
+  # Déclenchement manuel 
+  workflow_dispatch:
+
+jobs:
+  build_and_export:
+    runs-on: ubuntu-latest
+
+    # Nécessaire pour écrire dans le repo
+    permissions:
+      contents: write
+    
+    # Les commandes run sont executées par défaut dans le dossier backend
+    defaults:
+      run:
+        working-directory: ./backend
+    
+    steps:
+      # Récupération du projet
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Installation de uv, avec le chemin du fichier .lock
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      # Installation de la bonne version de Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "backend/.python-version"
+      
+      # Installation des dépendances
+      - name: Install dependencies
+        run: |
+          uv sync 
+          uv run python -m spacy download en_core_web_sm
+      
+      # Entrainement du modèle
+      - name: Train and export model
+        run: |
+          uv run train_export
+
+      # Upload des fichiers générés
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        if: github.event_name == 'release'
+        with:
+          files: |
+            backend/model.pkl
+            backend/label_encoder.pkl
+            backend/metrics.json
