@@ -33,12 +33,34 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
    * It sends the current claim content to the backend and updates the claim's tag
    * based on the index returned by the model.
    */
-  const handleAITagSelect = async () => {
+  // const handleAITagSelect = async () => {
+  //   if (!claim) return;
+
+  //   setIsUpdating(true);
+  //   try {
+  //     const response = await fetch("/api/llm", {
+  //       method: "POST",
+  //       body: JSON.stringify({ claim: claim }),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     const result = await response.json();
+
+  //     handleTagSelect(ALLOWED_TAGS[result.tagId]);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setIsUpdating(false);
+  //   }
+  // };
+
+  const handleMLTagSelect = async () => {
     if (!claim) return;
 
     setIsUpdating(true);
     try {
-      const response = await fetch("/api/llm", {
+      const response = await fetch("/api/tags", {
         method: "POST",
         body: JSON.stringify({ claim: claim }),
         headers: {
@@ -48,7 +70,7 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
 
       const result = await response.json();
 
-      handleTagSelect(ALLOWED_TAGS[result.tagId]);
+      handleTagSelect(ALLOWED_TAGS[result.prediction]);
     } catch (error) {
       console.error(error);
       setIsUpdating(false);
@@ -84,10 +106,10 @@ export default function TagSelector({ claim, onTagUpdate }: TagSelectorProps) {
             <button
               className={styles.AIButton}
               type="button"
-              onClick={() => handleAITagSelect()}
+              onClick={() => handleMLTagSelect()}
               disabled={isUpdating}
             >
-              AI Tag Select
+              ML Tag Select
             </button>
 
             <select
