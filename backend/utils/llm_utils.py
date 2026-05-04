@@ -1,6 +1,5 @@
 import ollama
 
-
 semantic_groups = {
     "credit": [
         "Credit reporting, credit repair services, or other personal consumer reports",
@@ -102,11 +101,15 @@ def query_llm(prompt, tags_list, model="mistral:7b", max_retry=2):
             parsed = parse_llm_output(raw, tags_list)
 
             if parsed:
-                return parsed, raw
+                tokens_used = {
+                    "input_tokens": response["prompt_eval_count"],
+                    "output_tokens": response["eval_count"],
+                }
+                return parsed, raw, tokens_used
         except Exception as e:
             raw = f"Error: {str(e)}"
 
-    return "UNKNOWN", raw
+    return "UNKNOWN", raw, {"input_tokens": 0, "output_tokens": 0}
 
 
 def same_group(label1, label2):
