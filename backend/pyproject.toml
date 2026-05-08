@@ -22,6 +22,7 @@ dependencies = [
 convert = "utils.convert:export_csv_to_feather"
 sample = "utils.sample:create_sample"
 train_export = "utils.train_and_export:train_and_export"
+api = "utils.run_api:run"
 
 [build-system]
 requires = ["hatchling"]
